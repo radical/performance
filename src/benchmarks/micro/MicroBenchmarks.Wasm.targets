@@ -1,10 +1,15 @@
 <Project>
   <PropertyGroup>
-    <WasmBuildOnlyAfterPublish Condition="'$(RunAOTCompilation)' == 'true'">false</WasmBuildOnlyAfterPublish>
+    <WasmBuildOnlyAfterPublish Condition="'$(RunAOTCompilation)' != 'true'">false</WasmBuildOnlyAfterPublish>
+    <WasmBuildOnlyAfterPublish Condition="'$(RunAOTCompilation)' == 'true'">true</WasmBuildOnlyAfterPublish>
+    <_WasmStrictVersionMatch>true</_WasmStrictVersionMatch>
+    <PublishTrimmed>true</PublishTrimmed>
+    <_WasmDevel>true</_WasmDevel>
   </PropertyGroup>
 
   <Target Name="ExtraPrepareForWasmBuild" AfterTargets="PrepareForWasmBuild">
     <ItemGroup>
+      <TrimmerRootDescriptor Include="$(WasmDataDir)MicroBenchmarks.Linker.xml" />
       <_LibrariesFile Include="$(TargetDir)publish\libraries\**\*" />
       <WasmFilesToIncludeInFileSystem Include="@(_LibrariesFile)" TargetPath="libraries\%(RecursiveDir)%(FileName)%(Extension)" />
     </ItemGroup>
