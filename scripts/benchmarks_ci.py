@@ -107,6 +107,13 @@ def add_arguments(parser: ArgumentParser) -> ArgumentParser:
         type=str,
         help='Product repository.'
     )
+    parser.add_argument(
+        '--dotnet-path',
+        dest='dotnet_path',
+        required=False,
+        type=str,
+        help='Path to a custom dotnet'
+    )
 
     def __is_valid_datetime(dt: str) -> str:
         try:
@@ -193,12 +200,15 @@ def __main(args: list) -> int:
         .FrameworkAction \
         .get_target_framework_monikers(args.frameworks)
     # Acquire necessary tools (dotnet)
-    init_tools(
-        architecture=args.architecture,
-        dotnet_versions=args.dotnet_versions,
-        target_framework_monikers=target_framework_monikers,
-        verbose=verbose
-    )
+    if not args.dotnet_path:
+        init_tools(
+            architecture=args.architecture,
+            dotnet_versions=args.dotnet_versions,
+            target_framework_monikers=target_framework_monikers,
+            verbose=verbose
+        )
+    else:
+        dotnet.setup_dotnet(args.dotnet_path)
 
     # WORKAROUND
     # The MicroBenchmarks.csproj targets .NET Core 2.1, 3.0, 3.1 and 5.0
