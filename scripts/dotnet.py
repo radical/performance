@@ -602,6 +602,7 @@ def get_commit_date(
         owner, repo = get_repository(repository)
         url = urlformat % (owner, repo, commit_sha)
 
+    print(f'url: {url}')
     build_timestamp = None
     retrycount = 0
     success = 0

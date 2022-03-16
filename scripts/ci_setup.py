@@ -161,11 +161,18 @@ def add_arguments(parser: ArgumentParser) -> ArgumentParser:
         help='Directory to install dotnet to'
     )
 
+    def __is_valid_dotnet_path(dp: str) -> str:
+        if not os.path.isdir(dp):
+            raise ArgumentTypeError('Path {} does not exist'.format(dp))
+        if not os.path.isfile(os.path.join(dp, 'dotnet')):
+            raise ArgumentTypeError('Could not find dotnet in {}'.format(dp))
+        return dp
+
     parser.add_argument(
         '--dotnet-path',
         dest='dotnet_path',
         required=False,
-        type=str,
+        type=__is_valid_dotnet_path,
         help='Path to a custom dotnet'
     )
 
