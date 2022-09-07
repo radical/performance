@@ -94,7 +94,14 @@ namespace System.IO.Tests
         {
             // use non-temp file path to ensure that we don't test some unusal File System on Unix
             string baseDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            File.WriteAllBytes(_testFilePath = Path.Combine(baseDir, Path.GetTempFileName()), Array.Empty<byte>());
+            Console.WriteLine ($"** SetupReadAllBytes: baseDir: {baseDir}");
+            // FIXME: should get the filename for the temp file
+            string tmpFileName = Path.GetTempFileName();
+            Console.WriteLine ($"** SetupReadAllBytes: tmpFileName: {tmpFileName}");
+            _testFilePath = Path.Combine(baseDir, Path.GetTempFileName());
+            Console.WriteLine ($"** SetupReadAllBytes: _testFilePath: {_testFilePath}");
+            File.WriteAllBytes(_testFilePath, Array.Empty<byte>());
+            Console.WriteLine ($"** SetupReadAllBytes: written to {_testFilePath}. Now writing individual files:");
             _filesToRead = new Dictionary<int, string>()
             {
                 { HalfKibibyte, WriteBytes(HalfKibibyte) },
@@ -106,8 +113,11 @@ namespace System.IO.Tests
 
             string WriteBytes(int fileSize)
             {
-                string filePath = Path.Combine(baseDir, Path.GetTempFileName());
+                string wbTmpFileName = Path.GetTempFileName();
+                Console.WriteLine ($"** SetupReadAllBytes.WriteBytes({fileSize}): wbtmpFileName: {wbTmpFileName}");
+                string filePath = Path.Combine(baseDir, wbTmpFileName);
                 File.WriteAllBytes(filePath, ValuesGenerator.Array<byte>(fileSize));
+                Console.WriteLine ($"** SetupReadAllBytes.WriteBytes write for {fileSize} done");
                 return filePath;
             }
         }
